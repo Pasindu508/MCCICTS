@@ -1,0 +1,28 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /projects/{allPaths=**} {
+      allow read, write: if true;
+    }
+
+    match /events/{allPaths=**} {
+      allow read, write: if true;
+    }
+
+    match /team/{allPaths=**} {
+      allow read, write: if true;
+    }
+
+    match /registrations/{allPaths=**} {
+      allow read, write: if true;
+    }
+
+    match /settings/background-audio/{allPaths=**} {
+      allow read, write: if true;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
