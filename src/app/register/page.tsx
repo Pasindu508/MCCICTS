@@ -119,7 +119,9 @@ export default function RegisterPage() {
       });
 
       setSubmitted(true);
-      form.reset();
+      if (form) {
+        form.reset();
+      }
       setStep(1);
       setDocFiles([]);
       setUploadResetKey((prev) => prev + 1);
