@@ -7,8 +7,11 @@ import CookieConsent from "@/components/layout/CookieConsent";
 import BackgroundAudio from "@/components/layout/BackgroundAudio";
 
 export const metadata: Metadata = {
-  title: "ICT Society | Mayurapada Central College",
-  description: "The ICT Society of Mayurapada Central College is a student-led organization advancing digital literacy, coding expertise, and AI research in education.",
+  title: {
+    default: "MCCICTS | ICT Society of Mayurapada Central College",
+    template: "%s | MCCICTS"
+  },
+  description: "The official website of the ICT Society of Mayurapada Central College. Empowering students through technology, innovation, and digital literacy.",
 };
 
 export default function RootLayout({

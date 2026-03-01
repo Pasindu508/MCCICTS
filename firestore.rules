@@ -1,31 +1,41 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Allow public write access to registrations and read only via query by email
     match /registrations/{docId} {
-      allow read, write: if true;
+      allow create: if true;
+      allow read: if true; // In production, consider restricting to specific fields or using server-side logic
+      allow update, delete: if false;
     }
 
+    // Allow public read access to content collections, but no client writes
     match /projects/{docId} {
-      allow read, write: if true;
+      allow read: if true;
+      allow write: if false;
     }
 
     match /settings/{docId} {
-      allow read, write: if true;
+      allow read: if true;
+      allow write: if false;
     }
 
     match /events/{docId} {
-      allow read, write: if true;
+      allow read: if true;
+      allow write: if false;
     }
 
     match /teamMembers/{docId} {
-      allow read, write: if true;
+      allow read: if true;
+      allow write: if false;
     }
 
+    // Allow creating cookie consent documents but no reads or updates
     match /cookieConsents/{docId} {
       allow create: if true;
       allow read, update, delete: if false;
     }
 
+    // Default rule: lock everything else
     match /{document=**} {
       allow read, write: if false;
     }

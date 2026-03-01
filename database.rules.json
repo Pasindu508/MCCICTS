@@ -1,0 +1,34 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "presence": {
+      ".read": true,
+      "$uid": {
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    },
+
+    "inPersonDay1Registrations": {
+      ".read": true,
+      "$registrationId": {
+        ".write": "!data.exists()"
+      }
+    },
+
+    "inPersonDay2Registrations": {
+      ".read": true,
+      "$registrationId": {
+        ".write": "!data.exists()"
+      }
+    },
+
+    "counters": {
+      "registrations": {
+        ".read": true,
+        ".write": "auth != null"
+      }
+    }
+  }
+}

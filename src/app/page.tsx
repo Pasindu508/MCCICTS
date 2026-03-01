@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Hero from "@/components/layout/Hero";
 import Infrastructure from "@/components/layout/Infrastructure";
 import About from "@/components/layout/About";
@@ -6,6 +7,11 @@ import Performance from "@/components/layout/Performance";
 import Team from "@/components/layout/Team";
 import Footer from "@/components/layout/Footer";
 import PageTransition from "@/components/layout/PageTransition";
+
+export const metadata: Metadata = {
+  title: "MCCICTS | ICT Society of Mayurapada Central College",
+  description: "The official website of the ICT Society of Mayurapada Central College. Empowering students through technology, innovation, and digital literacy.",
+};
 
 export default function Home() {
   return (

@@ -1,26 +1,34 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
+    // Allow public read for site assets, but only Admin write
     match /projects/{allPaths=**} {
-      allow read, write: if true;
+      allow read: if true;
+      allow write: if false;
     }
 
     match /events/{allPaths=**} {
-      allow read, write: if true;
+      allow read: if true;
+      allow write: if false;
     }
 
     match /team/{allPaths=**} {
-      allow read, write: if true;
-    }
-
-    match /registrations/{allPaths=**} {
-      allow read, write: if true;
+      allow read: if true;
+      allow write: if false;
     }
 
     match /settings/background-audio/{allPaths=**} {
-      allow read, write: if true;
+      allow read: if true;
+      allow write: if false;
     }
 
+    // Allow users to upload documents but not read or update them
+    match /registrations/docs/{allPaths=**} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+
+    // Default: lock everything else
     match /{allPaths=**} {
       allow read, write: if false;
     }
