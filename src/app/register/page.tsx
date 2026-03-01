@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import {
   addDoc,
   collection,
@@ -22,6 +22,7 @@ import MenuOverlay from "@/components/layout/MenuOverlay";
 import { FileUpload } from "@/components/ui/file-upload";
 
 export default function RegisterPage() {
+  const formRef = useRef<HTMLFormElement>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -78,7 +79,8 @@ export default function RegisterPage() {
     setSubmitted(false);
     setSubmitting(true);
 
-    const form = e.currentTarget;
+    const form = formRef.current;
+    if (!form) return;
     const formData = new FormData(form);
 
     const fullName = formData.get("fullName")?.toString().trim() || "";
@@ -229,7 +231,11 @@ export default function RegisterPage() {
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-transparent pointer-events-none" />
             <div className="absolute -top-20 -right-32 w-72 h-72 bg-blue-500/10 blur-3xl pointer-events-none" />
 
-            <form onSubmit={handleSubmit} className="relative z-10 space-y-6 md:space-y-7">
+            <form
+              ref={formRef}
+              onSubmit={handleSubmit}
+              className="relative z-10 space-y-6 md:space-y-7"
+            >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
