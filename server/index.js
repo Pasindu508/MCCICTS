@@ -16,17 +16,55 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "mccicts-admin";
 const SESSION_HOURS = Number(process.env.SESSION_HOURS || 24);
 const UPLOADS_DIR = path.join(__dirname, "..", "uploads");
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
+// Secret used to sign stateless session tokens. Must be stable across
+// invocations (so tokens validate on serverless platforms like Vercel where
+// each request may run in a fresh instance). Falls back to other secrets so it
+// still works if only DATABASE_URL/ADMIN_PASSWORD are configured.
+const SESSION_SECRET =
+	process.env.SESSION_SECRET || process.env.ADMIN_PASSWORD || DATABASE_URL || "mccicts-dev-secret";
 
+// Only hard-exit when running as a standalone server; as a serverless import we
+// must not crash the whole function at load time (auth still works without DB).
 if (!DATABASE_URL) {
-	console.error("DATABASE_URL is required. Copy .env.example to .env and add your Neon connection string.");
-	process.exit(1);
+	if (require.main === module) {
+		console.error("DATABASE_URL is required. Copy .env.example to .env and add your Neon connection string.");
+		process.exit(1);
+	} else {
+		console.error("DATABASE_URL is not set — news/events/admin data routes will fail until it is configured.");
+	}
 }
 
 const { neon } = require("@neondatabase/serverless");
-const sql = neon(DATABASE_URL);
+const sql = DATABASE_URL ? neon(DATABASE_URL) : null;
 
-/** @type {Map<string, { role: string, displayName: string, expires: number }>} */
-const sessions = new Map();
+// --- Stateless signed session tokens (no server-side store) ---
+function base64url(buf) {
+	return Buffer.from(buf).toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function signToken(payload) {
+	const body = base64url(JSON.stringify(payload));
+	const sig = base64url(crypto.createHmac("sha256", SESSION_SECRET).update(body).digest());
+	return `${body}.${sig}`;
+}
+
+function verifyToken(token) {
+	if (!token || typeof token !== "string" || !token.includes(".")) return null;
+	const [body, sig] = token.split(".");
+	if (!body || !sig) return null;
+	const expected = base64url(crypto.createHmac("sha256", SESSION_SECRET).update(body).digest());
+	const sigBuf = Buffer.from(sig);
+	const expBuf = Buffer.from(expected);
+	if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) return null;
+	let payload;
+	try {
+		payload = JSON.parse(Buffer.from(body.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString());
+	} catch {
+		return null;
+	}
+	if (!payload || typeof payload.expires !== "number" || payload.expires < Date.now()) return null;
+	return payload;
+}
 
 const corsHeaders = {
 	"Access-Control-Allow-Origin": "*",
@@ -40,6 +78,20 @@ function sendJson(res, status, data) {
 }
 
 function readBody(req, maxBytes = 1024 * 1024) {
+	// On serverless platforms (e.g. Vercel) the request body is often already
+	// parsed and the stream consumed, exposed as req.body. Prefer it.
+	if (req.body !== undefined && req.body !== null) {
+		if (typeof req.body === "string") {
+			try {
+				return Promise.resolve(req.body ? JSON.parse(req.body) : {});
+			} catch {
+				return Promise.reject(new Error("Invalid JSON body"));
+			}
+		}
+		if (typeof req.body === "object") {
+			return Promise.resolve(req.body);
+		}
+	}
 	return new Promise((resolve, reject) => {
 		let data = "";
 		let size = 0;
@@ -100,25 +152,20 @@ function sendFile(res, filePath, contentType) {
 }
 
 function createSession(role, displayName) {
-	const token = crypto.randomBytes(32).toString("hex");
-	sessions.set(token, {
+	return signToken({
 		role,
 		displayName,
 		expires: Date.now() + SESSION_HOURS * 60 * 60 * 1000,
 	});
-	return token;
 }
 
 function getSession(req) {
 	const auth = req.headers.authorization;
 	if (!auth || !auth.startsWith("Bearer ")) return null;
 	const token = auth.slice(7);
-	const session = sessions.get(token);
-	if (!session || session.expires < Date.now()) {
-		sessions.delete(token);
-		return null;
-	}
-	return { token, ...session };
+	const payload = verifyToken(token);
+	if (!payload) return null;
+	return { token, ...payload };
 }
 
 function requireAdmin(req, res) {
@@ -228,8 +275,7 @@ async function handleRequest(req, res) {
 		}
 
 		if (url.pathname === "/api/auth/logout" && req.method === "POST") {
-			const session = getSession(req);
-			if (session) sessions.delete(session.token);
+			// Stateless tokens: the client simply discards its token.
 			sendJson(res, 200, { ok: true });
 			return;
 		}
@@ -535,15 +581,22 @@ async function handleRequest(req, res) {
 	}
 }
 
-http.createServer(handleRequest).listen(PORT, async () => {
-	ensureUploadsDir();
-	try {
-		await ensureImageColumns();
-	} catch (error) {
-		console.warn("Could not verify image_url columns:", error.message);
-	}
-	console.log(`MCCICTS API → http://localhost:${PORT}`);
-	console.log("  Auth: POST /api/auth/guest, /api/auth/admin, GET /api/auth/me");
-	console.log("  Admin: GET /api/admin/stats, /api/admin/export, POST /api/admin/upload");
-	console.log("  Uploads: GET /uploads/news|events/*");
-});
+// Run as a standalone HTTP server only when executed directly (local dev).
+// When imported (e.g. by the Vercel serverless function) we just export the
+// request handler.
+if (require.main === module) {
+	http.createServer(handleRequest).listen(PORT, async () => {
+		ensureUploadsDir();
+		try {
+			await ensureImageColumns();
+		} catch (error) {
+			console.warn("Could not verify image_url columns:", error.message);
+		}
+		console.log(`MCCICTS API → http://localhost:${PORT}`);
+		console.log("  Auth: POST /api/auth/guest, /api/auth/admin, GET /api/auth/me");
+		console.log("  Admin: GET /api/admin/stats, /api/admin/export, POST /api/admin/upload");
+		console.log("  Uploads: GET /uploads/news|events/*");
+	});
+}
+
+module.exports = { handleRequest };

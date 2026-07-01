@@ -61,6 +61,24 @@ Society news and upcoming events are stored in **Neon Postgres** and served via 
 3. Apply the schema: run `db/schema.sql` in the Neon SQL Editor (or use the Neon MCP).
 4. Run `npm install` then `npm start` (starts the desktop on port **1998** and the API on **3456**).
 
+### Deploying to Vercel
+
+The desktop's static files are served directly, and the API runs as a single
+serverless function (`api/[...path].js`) that reuses the same request handler as
+the local server. In production the client calls the API on the same origin
+(`https://your-domain/api/...`), so no separate API host is needed.
+
+In **Project → Settings → Environment Variables**, set:
+
+- `DATABASE_URL` — Neon Postgres connection string
+- `ADMIN_PASSWORD` — administrator login password
+- `SESSION_SECRET` — a long random string used to sign session tokens
+  (generate with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`)
+
+Session tokens are **stateless** (HMAC-signed), so login works across serverless
+invocations. Note: admin image uploads write to the local filesystem and are not
+persistent on Vercel's ephemeral serverless filesystem.
+
 ### Desktop apps
 
 - **MCCICTS News** — search, category filter, featured filter, sort, split-pane reader, print
