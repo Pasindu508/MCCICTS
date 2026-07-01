@@ -28,6 +28,7 @@
 	const FILTER_ID = "crt-barrel";
 	const BEZEL_ID = "crt-bezel";
 	const SCANLINES_ID = "crt-scanlines";
+	const GRILLE_ID = "crt-grille";
 	const CURSOR_ID = "crt-cursor";
 	const CURSOR_SRC = "/cursors/arrow.cur";
 	// Max edge displacement in px; higher = more pronounced curve.
@@ -151,6 +152,30 @@
 			opacity: 0.7;
 		}
 		#${SCANLINES_ID}[hidden] { display: none !important; }
+
+		/* RGB aperture grille: vertical red/green/blue phosphor stripes, like a
+		   Trinitron-style CRT. Crisp (drawn on <html>, outside the barrel filter).
+		   'screen' blend keeps the picture bright while adding the colour triads;
+		   a low opacity keeps content readable. Combined with the horizontal
+		   scanlines above, this gives a full shadow-mask look. */
+		#${GRILLE_ID} {
+			position: fixed;
+			inset: 0;
+			pointer-events: none;
+			z-index: ${Z_INDEX + 501};
+			background-image: repeating-linear-gradient(
+				to right,
+				rgba(255, 0, 0, 0.16) 0px,
+				rgba(255, 0, 0, 0.16) 1px,
+				rgba(0, 255, 0, 0.16) 1px,
+				rgba(0, 255, 0, 0.16) 2px,
+				rgba(0, 0, 255, 0.16) 2px,
+				rgba(0, 0, 255, 0.16) 3px
+			);
+			mix-blend-mode: screen;
+			opacity: 0.5;
+		}
+		#${GRILLE_ID}[hidden] { display: none !important; }
 
 		/* Fake mouse pointer that lives INSIDE the curved screen. The native
 		   cursor is hidden over the platform chrome and this arrow is drawn in
@@ -282,6 +307,17 @@
 		return el;
 	}
 
+	function buildGrille() {
+		let el = document.getElementById(GRILLE_ID);
+		if (el) return el;
+		el = document.createElement("div");
+		el.id = GRILLE_ID;
+		el.setAttribute("aria-hidden", "true");
+		// On <html> (outside the filter) so the stripes stay crisp.
+		document.documentElement.appendChild(el);
+		return el;
+	}
+
 	// --- Fake in-screen mouse pointer -----------------------------------------
 
 	let cursorInsetX = 0;
@@ -401,6 +437,8 @@
 		if (bezel) bezel.hidden = !enabled;
 		const scanlines = document.getElementById(SCANLINES_ID);
 		if (scanlines) scanlines.hidden = !enabled;
+		const grille = document.getElementById(GRILLE_ID);
+		if (grille) grille.hidden = !enabled;
 		document.body.classList.toggle("crt-effect-on", enabled);
 		document.body.classList.toggle("crt-curve", enabled && curvatureOn);
 	}
@@ -443,6 +481,7 @@
 		buildOverlay();
 		buildBezel();
 		buildScanlines();
+		buildGrille();
 		buildCursor();
 		apply(isEnabled());
 		initCursor();

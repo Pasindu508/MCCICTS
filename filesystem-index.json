@@ -29,6 +29,9 @@
   },
   "android-chrome-192x192.png": null,
   "android-chrome-256x256.png": null,
+  "api": {
+    "index.js": null
+  },
   "apple-touch-icon.png": null,
   "audio": {
     "CHIMES.WAV": null,
@@ -4693,5 +4696,6 @@
     "news": {
       "42c237f7-769e-4c49-b535-3c7eb0db8813.png": null
     }
-  }
+  },
+  "vercel.json": null
 }
