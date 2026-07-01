@@ -1,0 +1,7 @@
+.view-mode-month .list-item {
+	margin-left: 4px;
+}
+
+#register-btn:not(:disabled) {
+	font-weight: bold;
+}

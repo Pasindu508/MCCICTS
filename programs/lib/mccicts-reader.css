@@ -1,0 +1,252 @@
+/* Shared Win98-style reader layout for MCCICTS apps */
+body {
+	margin: 0;
+	padding: 4px;
+	box-sizing: border-box;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	font-family: "MS Sans Serif", Tahoma, sans-serif;
+	font-size: 12px;
+	background: var(--ButtonFace);
+	color: var(--WindowText);
+}
+
+.toolbar,
+.filter-bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 4px;
+	padding: 4px;
+	margin-bottom: 4px;
+	flex: 0 0 auto;
+}
+
+.toolbar button,
+.filter-bar button,
+.filter-bar select,
+.filter-bar input[type="search"] {
+	font-family: inherit;
+	font-size: 12px;
+}
+
+.toolbar button,
+.filter-bar button {
+	padding: 2px 10px;
+}
+
+.filter-bar label {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 11px;
+}
+
+.filter-bar select,
+.filter-bar input[type="search"] {
+	padding: 2px 4px;
+	min-width: 100px;
+}
+
+.filter-bar input[type="search"] {
+	flex: 1;
+	min-width: 120px;
+}
+
+.toolbar .spacer {
+	flex: 1;
+}
+
+#status-line {
+	padding: 3px 6px;
+	margin-bottom: 4px;
+	flex: 0 0 auto;
+	font-size: 11px;
+}
+
+.main-split {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	gap: 4px;
+}
+
+.list-pane,
+.detail-pane {
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.list-pane {
+	flex: 0 0 42%;
+	max-width: 50%;
+}
+
+.detail-pane {
+	flex: 1;
+}
+
+.pane-title {
+	font-weight: bold;
+	font-size: 11px;
+	padding: 2px 4px;
+	margin-bottom: 2px;
+}
+
+.list-scroll,
+.detail-scroll {
+	flex: 1;
+	min-height: 0;
+	overflow: auto;
+	padding: 4px;
+}
+
+.item-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.list-item {
+	padding: 5px 6px;
+	margin-bottom: 2px;
+	cursor: pointer;
+	border: 1px solid transparent;
+	background: var(--Window);
+}
+
+.list-item:hover {
+	background: var(--Hilight);
+	color: var(--HilightText);
+}
+
+.list-item.selected {
+	background: var(--Hilight);
+	color: var(--HilightText);
+	font-weight: bold;
+}
+
+.list-item.featured {
+	border-left: 3px solid #008080;
+}
+
+.list-item-title {
+	font-weight: bold;
+	margin-bottom: 2px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.list-item-meta {
+	font-size: 10px;
+	opacity: 0.85;
+}
+
+.detail-empty {
+	padding: 24px 12px;
+	text-align: center;
+	color: var(--GrayText);
+}
+
+.detail-header h1 {
+	font-size: 16px;
+	margin: 0 0 8px;
+	line-height: 1.25;
+}
+
+.detail-meta {
+	font-size: 11px;
+	color: var(--GrayText);
+	margin-bottom: 10px;
+	line-height: 1.5;
+}
+
+.detail-body {
+	line-height: 1.45;
+	white-space: pre-wrap;
+}
+
+.detail-photo {
+	display: block;
+	max-width: 100%;
+	max-height: 280px;
+	width: auto;
+	height: auto;
+	margin: 0 0 12px;
+	border: 1px solid var(--ButtonShadow);
+	background: var(--Window);
+}
+
+.badge {
+	display: inline-block;
+	background: #000080;
+	color: #fff;
+	font-size: 10px;
+	padding: 1px 5px;
+	margin-right: 4px;
+}
+
+.badge.featured-badge {
+	background: #008080;
+}
+
+.countdown {
+	display: inline-block;
+	background: #ffffcc;
+	color: #000080;
+	border: 1px solid #808000;
+	padding: 2px 6px;
+	font-weight: bold;
+	margin-bottom: 8px;
+}
+
+.countdown.past {
+	background: #f0f0f0;
+	color: var(--GrayText);
+	border-color: var(--ButtonShadow);
+}
+
+.detail-actions {
+	margin-top: 12px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.detail-actions button,
+.detail-actions a.button-link {
+	font-family: inherit;
+	font-size: 12px;
+	padding: 3px 10px;
+	text-decoration: none;
+	color: var(--WindowText);
+	display: inline-block;
+}
+
+.month-group {
+	margin-bottom: 8px;
+}
+
+.month-heading {
+	font-weight: bold;
+	font-size: 11px;
+	padding: 4px 2px;
+	border-bottom: 1px solid var(--ButtonShadow);
+	margin-bottom: 4px;
+	color: #000080;
+}
+
+.error-state {
+	padding: 12px;
+	color: #800000;
+	text-align: center;
+}
+
+.empty-state {
+	padding: 12px;
+	color: var(--GrayText);
+	text-align: center;
+}

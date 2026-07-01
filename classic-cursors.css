@@ -1,0 +1,248 @@
+/**
+ * Windows 95/98 cursors — darix555 set
+ * Text cursors use explicit url()+fallback (NOT css vars — browsers break var() with commas).
+ */
+
+:root {
+	--cur-default: url("/cursors/arrow.cur"), default;
+	--cur-help: url("/cursors/help_win95.cur"), help;
+	--cur-wait: url("/cursors/Cursor_3.cur"), wait;
+	--cur-progress: url("/cursors/Cursor_4.cur"), progress;
+	--cur-busy: url("/cursors/Cursor_17.cur"), progress;
+	--cur-crosshair: url("/cursors/Cursor_5.cur"), crosshair;
+	--cur-move: url("/cursors/Cursor_11.cur"), move;
+	--cur-not-allowed: url("/cursors/Cursor_15.cur"), not-allowed;
+	--cur-nwse: url("/cursors/Cursor_6.cur"), nwse-resize;
+	--cur-nesw: url("/cursors/Cursor_7.cur"), nesw-resize;
+	--cur-ew: url("/cursors/Cursor_8.cur"), ew-resize;
+	--cur-ns: url("/cursors/Cursor_9.cur"), ns-resize;
+}
+
+html,
+body {
+	cursor: url("/cursors/arrow.cur"), default;
+}
+
+.desktop,
+.folder-view,
+.folder-view .desktop-icon,
+.folder-view .desktop-icon .icon-wrapper,
+.folder-view .desktop-icon .title:not(input),
+.folder-view .marquee,
+.taskbar,
+.start-button,
+.tasks,
+.task,
+.os-window,
+.window-titlebar,
+.window-title,
+.start-menu,
+.start-menu-content,
+.start-menu a,
+.start-menu li,
+.menu-bar,
+.menu-button,
+.menu-item,
+.menu-popup,
+.menu-popup-item,
+.tray,
+.tray-icon,
+#profile-label,
+.toolbar,
+.toolbar-button,
+.toolbar-dropdown-button,
+#standard-buttons,
+#internet-buttons,
+#status-bar,
+#status-bar-left,
+#status-bar-middle,
+#status-bar-right,
+#status-bar-simple,
+#content,
+.inset-deep,
+.inset-shallow,
+.outset-deep,
+.outset-shallow,
+.list-pane,
+.detail-pane,
+.list-scroll,
+.detail-scroll,
+.item-list,
+.list-item,
+.pane-title,
+.filter-bar,
+.filter-bar label,
+.tab,
+.admin-split,
+.dashboard-card,
+.stat-card,
+.dash-list,
+.dash-list li,
+#login-screen,
+#login-screen button,
+#login-screen .profile-card,
+button,
+summary,
+label,
+legend,
+optgroup,
+option,
+select,
+a,
+.window-content {
+	cursor: url("/cursors/arrow.cur"), default;
+}
+
+[style*="cursor: pointer"],
+[style*="cursor:pointer"] {
+	cursor: url("/cursors/arrow.cur"), default !important;
+}
+
+/* === TEXT I-BEAM (Beam) — must use direct cursor value, not var() === */
+input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="image"]):not([type="hidden"]),
+textarea,
+[contenteditable="true"],
+.desktop-icon .title input,
+.desktop-icon.renaming .title,
+.desktop-icon.renaming .title input,
+#address,
+#document-textarea,
+#search-input,
+#filter-search,
+#admin-password,
+.admin-form input:not([type="button"]):not([type="checkbox"]):not([type="radio"]),
+.admin-form textarea,
+#edit-form input:not([type="button"]):not([type="checkbox"]):not([type="radio"]),
+#edit-form textarea,
+.filter-bar input[type="search"],
+#address-compound-input input,
+.os-window input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]),
+.os-window textarea,
+.window-content input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]),
+.window-content textarea,
+.help-window .contents,
+.dosbox-container canvas,
+.xterm,
+.xterm .xterm-screen,
+.xterm-helper-textarea,
+.CodeMirror,
+.CodeMirror-scroll,
+.monaco-editor,
+.monaco-editor .inputarea {
+	cursor: url("/images/cursors/beam.png") 10 10, url("/cursors/Beam.cur") 10 10, text !important;
+}
+
+#address-compound-input {
+	cursor: url("/cursors/arrow.cur"), default;
+}
+
+/* Help */
+.help-window .toolbar button[disabled] {
+	cursor: url("/cursors/help_win95.cur"), help;
+}
+
+/* Loading */
+.loading-program,
+.loading-program * {
+	cursor: url("/cursors/Cursor_17.cur"), progress !important;
+}
+
+body.dragging,
+body.dragging * {
+	cursor: url("/cursors/Cursor_11.cur"), move !important;
+}
+
+body.drag {
+	cursor: url("/cursors/Cursor_11.cur"), move !important;
+}
+
+body.cursor-bully,
+body.cursor-bully * {
+	cursor: inherit !important;
+}
+
+.main-canvas,
+.canvas-area .main-canvas,
+.selection,
+.handle,
+.eye-gaze-pause-button {
+	cursor: inherit;
+}
+
+/* Resize handles */
+[style*="cursor: nw-resize"],
+[style*="cursor: se-resize"] {
+	cursor: url("/cursors/Cursor_6.cur"), nwse-resize !important;
+}
+
+[style*="cursor: ne-resize"],
+[style*="cursor: sw-resize"] {
+	cursor: url("/cursors/Cursor_7.cur"), nesw-resize !important;
+}
+
+[style*="cursor: ew-resize"],
+[style*="cursor: e-resize"],
+[style*="cursor: w-resize"] {
+	cursor: url("/cursors/Cursor_8.cur"), ew-resize !important;
+}
+
+[style*="cursor: ns-resize"],
+[style*="cursor: n-resize"],
+[style*="cursor: s-resize"] {
+	cursor: url("/cursors/Cursor_9.cur"), ns-resize !important;
+}
+
+[style*="cursor: move"] {
+	cursor: url("/cursors/Cursor_11.cur"), move !important;
+}
+
+[style*="cursor: crosshair"] {
+	cursor: url("/cursors/Cursor_5.cur"), crosshair !important;
+}
+
+[style*="cursor: not-allowed"] {
+	cursor: url("/cursors/Cursor_15.cur"), not-allowed !important;
+}
+
+[style*="cursor: wait"] {
+	cursor: url("/cursors/Cursor_3.cur"), wait !important;
+}
+
+[style*="cursor: progress"] {
+	cursor: url("/cursors/Cursor_4.cur"), progress !important;
+}
+
+[style*="cursor: text"],
+[style*="cursor: vertical-text"] {
+	cursor: url("/images/cursors/beam.png") 10 10, url("/cursors/Beam.cur") 10 10, text !important;
+}
+
+[style*="cursor: help"] {
+	cursor: url("/cursors/help_win95.cur"), help !important;
+}
+
+[style*="cursor: none"] {
+	cursor: none !important;
+}
+
+/* cursor:auto hacks — but never on text fields */
+:not(input):not(textarea):not([contenteditable="true"])[style*="cursor: auto"],
+:not(input):not(textarea):not([contenteditable="true"])[style*="cursor:auto"] {
+	cursor: url("/cursors/arrow.cur"), default !important;
+}
+
+*::-webkit-scrollbar,
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-corner {
+	cursor: url("/cursors/arrow.cur"), default;
+}
+
+button:disabled,
+.toolbar-button:disabled,
+.toolbar-button[disabled],
+input:disabled,
+select:disabled,
+textarea:disabled {
+	cursor: url("/cursors/arrow.cur"), default;
+}

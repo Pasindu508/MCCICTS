@@ -1,0 +1,50 @@
+  ___   ___             Welcome to MCCICTS                       
+ /   \ /   \       o    ____     __.  .___    ___.
+ `---| >---<       \   (       .'   \ /   \ .'   `
+     | '   `       |   `--.    |    | |   ' |    |
+ `---' `---' o /`  |  \___.' o  `._.' /      `---|
+               \___/`                        \___/                                         
+
+Mayurapada Central College ICT Society (MCCICTS)
+Empowering the next generation of digital leaders through
+innovation, technology, and collaborative learning.
+
+College: Mayurapada Central College, Narammala, Sri Lanka
+Zone: Giriulla Educational Zone, Kurunegala District
+Website: https://mccicts.lk
+College site: https://mayurapada.lk
+
+--------------------------------------
+About This Desktop
+======--------------------------------
+
+This interactive web desktop is the official MCCICTS portal,
+built on a Windows 98-inspired interface. Explore built-in
+apps, customize themes, and learn about our society's work
+in web development, UI/UX design, cybersecurity, and more.
+
+--------------------------------------
+Our Focus Areas
+======--------------------------------
+
+- Web Development (React, Next.js, TypeScript)
+- UI/UX Design
+- Cyber Security & digital safety
+- Mobile Apps, AI/ML, Robotics, and Graphic Design
+
+--------------------------------------
+Included Software
+======--------------------------------
+
+This desktop bundles classic Windows 98 applications recreated
+for the web, including Paint, Notepad, Calculator, Minesweeper,
+Solitaire, Pinball, Winamp, Explorer, and more.
+
+--------------------------------------
+Credits
+======--------------------------------
+
+Desktop shell and bundled apps use open-source libraries credited below and in upstream project files.
+
+MCCICTS — Mayurapada Central College ICT Society
+	https://mccicts.lk

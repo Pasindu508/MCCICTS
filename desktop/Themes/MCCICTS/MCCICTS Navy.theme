@@ -1,0 +1,37 @@
+; MCCICTS Navy — darker accent theme for evening study sessions
+
+[Control Panel\Colors]
+ActiveTitle=0 0 128
+Background=0 0 64
+Hilight=0 128 128
+HilightText=255 255 255
+TitleText=255 255 255
+Window=255 255 255
+WindowText=0 0 0
+Scrollbar=160 176 208
+InactiveTitle=64 64 128
+Menu=180 195 220
+WindowFrame=0 0 0
+MenuText=0 0 0
+ActiveBorder=0 0 128
+InactiveBorder=96 96 160
+AppWorkspace=0 0 64
+ButtonFace=180 195 220
+ButtonShadow=64 64 128
+GrayText=96 96 128
+ButtonText=0 0 0
+InactiveTitleText=192 192 224
+ButtonHilight=218 225 237
+ButtonDkShadow=0 0 0
+ButtonLight=200 210 230
+InfoText=0 0 0
+InfoWindow=255 255 225
+
+[Control Panel\Desktop]
+Wallpaper=
+TileWallpaper=0
+Pattern=(None)
+
+[Metrics]
+NonClientMetrics=0 12 8 6 0 700 0 0 0 0 1 2 1 34 0 MS Sans Serif
+IconMetrics=32 4 32 16 32 0

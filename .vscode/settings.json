@@ -1,0 +1,13 @@
+{
+	// color scheme to distinguish the VS Code workspace
+	"workbench.colorTheme": "windows-nt",
+	// "workbench.iconTheme": "windows-nt-icons",
+	"workbench.iconTheme": "vsclassic-icon-theme",
+	"workbench.colorCustomizations": {
+		"[windows-nt]": {
+			"icon.foreground": "#000000",
+			"sideBar.foreground": "#000000",
+			"activityBar.inactiveForeground": "#777",
+		},
+	}
+}

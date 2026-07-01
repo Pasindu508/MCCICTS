@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="768" viewBox="0 0 1024 768">
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#000080"/>
+      <stop offset="45%" stop-color="#004080"/>
+      <stop offset="100%" stop-color="#008080"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1024" height="768" fill="url(#sky)"/>
+  <rect width="1024" height="768" fill="url(#grid)"/>
+  <text x="512" y="340" text-anchor="middle" font-family="Tahoma, Arial, sans-serif" font-size="72" font-weight="bold" fill="#ffffff" opacity="0.92">MCCICTS</text>
+  <text x="512" y="400" text-anchor="middle" font-family="Tahoma, Arial, sans-serif" font-size="22" fill="#c0ffff">Mayurapada Central College ICT Society</text>
+  <text x="512" y="440" text-anchor="middle" font-family="Tahoma, Arial, sans-serif" font-size="16" fill="#e0ffff" opacity="0.85">Innovating for a digital future</text>
+</svg>

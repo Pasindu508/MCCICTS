@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>MCCICTS Admin Console</title>
+	<link href="../../lib/os-gui/layout.css" rel="stylesheet" type="text/css">
+	<link href="../../lib/os-gui/windows-98.css" rel="stylesheet" type="text/css">
+	<link href="../../classic.css" rel="stylesheet" type="text/css">
+	<link href="../lib/mccicts-reader.css" rel="stylesheet" type="text/css">
+	<link href="admin.css" rel="stylesheet" type="text/css">
+	<link href="/classic-cursors.css" rel="stylesheet" type="text/css">
+	<link rel="icon" href="../../images/icons/settings-16x16.png" sizes="16x16" type="image/png">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<script src="../../config/mccicts-api.js"></script>
+	<script src="../lib/mccicts-api-client.js"></script>
+	<script>MCCICTS.syncSessionFromParent();</script>
+</head>
+<body>
+	<div class="toolbar inset-shallow">
+		<button type="button" class="tab active" data-section="dashboard">Dashboard</button>
+		<button type="button" class="tab" data-section="news">News</button>
+		<button type="button" class="tab" data-section="events">Events</button>
+		<button type="button" class="tab" data-section="system">System</button>
+		<span class="spacer"></span>
+		<span id="admin-badge" class="admin-badge">Administrator</span>
+		<button type="button" id="refresh-btn">Refresh</button>
+	</div>
+	<div id="status-line" class="inset-shallow">MCCICTS Administrator Console</div>
+
+	<div id="access-denied" class="inset-deep error-state" hidden>
+		Administrator access required. Log off and sign in as Administrator.
+	</div>
+
+	<!-- Dashboard -->
+	<div id="panel-dashboard" class="panel admin-panel">
+		<div class="stats-grid" id="stats-grid"></div>
+		<div class="dashboard-split">
+			<div class="dashboard-card inset-deep">
+				<div class="pane-title">Recent News</div>
+				<ul class="dash-list" id="dash-recent-news"></ul>
+			</div>
+			<div class="dashboard-card inset-deep">
+				<div class="pane-title">Upcoming Events</div>
+				<ul class="dash-list" id="dash-upcoming-events"></ul>
+			</div>
+		</div>
+		<div class="dashboard-card inset-deep category-breakdown">
+			<div class="pane-title">Content by Category</div>
+			<div class="category-columns" id="category-breakdown"></div>
+		</div>
+	</div>
+
+	<!-- News / Events CRUD -->
+	<div id="panel-records" class="panel admin-panel" hidden>
+		<div class="filter-bar inset-shallow" id="record-filters">
+			<label>
+				Search
+				<input type="search" id="filter-search" placeholder="Title, text…">
+			</label>
+			<label>
+				Category
+				<select id="filter-category">
+					<option value="">All</option>
+				</select>
+			</label>
+			<label id="filter-sort-wrap">
+				Sort
+				<select id="filter-sort">
+					<option value="newest">Newest first</option>
+					<option value="oldest">Oldest first</option>
+				</select>
+			</label>
+			<label id="filter-event-wrap" hidden>
+				When
+				<select id="filter-event-when">
+					<option value="all">All events</option>
+					<option value="upcoming">Upcoming</option>
+					<option value="past">Past</option>
+				</select>
+			</label>
+			<label id="filter-featured-wrap">
+				<input type="checkbox" id="filter-featured"> Featured only
+			</label>
+			<button type="button" id="filter-apply-btn">Apply</button>
+		</div>
+		<div class="admin-split">
+			<div class="list-pane inset-deep">
+				<div class="pane-title list-pane-header">
+					<span id="list-title">Records</span>
+					<label class="select-all-label">
+						<input type="checkbox" id="select-all"> All
+					</label>
+				</div>
+				<div class="list-scroll">
+					<ul class="item-list" id="record-list"></ul>
+				</div>
+				<div class="list-actions">
+					<button type="button" id="new-btn">New</button>
+					<button type="button" id="duplicate-btn" disabled>Duplicate</button>
+					<button type="button" id="delete-btn" disabled>Delete</button>
+					<button type="button" id="bulk-delete-btn" disabled>Delete selected</button>
+				</div>
+			</div>
+			<div class="detail-pane inset-deep">
+				<div class="pane-title" id="form-title">Edit</div>
+				<div class="detail-scroll">
+					<form id="edit-form" class="admin-form"></form>
+					<div id="preview-pane" class="preview-pane inset-shallow" hidden>
+						<div class="pane-title">Live Preview</div>
+						<div id="preview-content"></div>
+					</div>
+				</div>
+				<div class="form-actions">
+					<button type="submit" form="edit-form" id="save-btn">Save</button>
+					<button type="button" id="preview-btn">Preview</button>
+					<button type="button" id="open-public-btn" disabled>Open in App</button>
+					<button type="button" id="toggle-featured-btn" hidden>Toggle Featured</button>
+					<button type="button" id="export-section-btn">Export JSON</button>
+					<button type="button" id="clear-btn">Clear</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- System -->
+	<div id="panel-system" class="panel admin-panel" hidden>
+		<div class="system-grid">
+			<div class="dashboard-card inset-deep">
+				<div class="pane-title">Session</div>
+				<dl class="system-dl" id="session-info"></dl>
+			</div>
+			<div class="dashboard-card inset-deep">
+				<div class="pane-title">API Health</div>
+				<dl class="system-dl" id="health-info"></dl>
+				<button type="button" id="health-check-btn">Run Health Check</button>
+			</div>
+			<div class="dashboard-card inset-deep system-wide">
+				<div class="pane-title">Data Management</div>
+				<p class="system-note">Export a full backup of all news and events as JSON for archiving or migration.</p>
+				<div class="list-actions" style="border-top: none; padding-top: 0;">
+					<button type="button" id="export-all-btn">Export Full Backup</button>
+					<button type="button" id="reload-dashboard-btn">Reload Dashboard</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="app.js"></script>
+</body>
+</html>

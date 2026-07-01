@@ -1,0 +1,38 @@
+; MCCICTS Teal — Mayurapada Central College ICT Society
+; Official teal and navy color scheme
+
+[Control Panel\Colors]
+ActiveTitle=0 128 128
+Background=0 128 128
+Hilight=0 128 128
+HilightText=255 255 255
+TitleText=255 255 255
+Window=255 255 255
+WindowText=0 0 0
+Scrollbar=192 220 220
+InactiveTitle=0 0 128
+Menu=192 232 232
+WindowFrame=0 0 0
+MenuText=0 0 0
+ActiveBorder=128 192 192
+InactiveBorder=160 200 200
+AppWorkspace=0 128 128
+ButtonFace=192 232 232
+ButtonShadow=0 96 96
+GrayText=96 128 128
+ButtonText=0 0 0
+InactiveTitleText=192 220 255
+ButtonHilight=240 255 255
+ButtonDkShadow=0 0 0
+ButtonLight=220 248 248
+InfoText=0 0 0
+InfoWindow=255 255 225
+
+[Control Panel\Desktop]
+Wallpaper=
+TileWallpaper=0
+Pattern=(None)
+
+[Metrics]
+NonClientMetrics=0 12 8 6 0 700 0 0 0 0 1 2 1 34 0 MS Sans Serif
+IconMetrics=32 4 32 16 32 0

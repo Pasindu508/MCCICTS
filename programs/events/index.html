@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>MCCICTS Events</title>
+	<link href="../../lib/os-gui/layout.css" rel="stylesheet" type="text/css">
+	<link href="../../lib/os-gui/windows-98.css" rel="stylesheet" type="text/css">
+	<link href="../../classic.css" rel="stylesheet" type="text/css">
+	<link href="../lib/mccicts-reader.css" rel="stylesheet" type="text/css">
+	<link href="events.css" rel="stylesheet" type="text/css">
+	<link href="/classic-cursors.css" rel="stylesheet" type="text/css">
+	<link rel="icon" href="../../images/icons/task-scheduler-16x16.png" sizes="16x16" type="image/png">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<script src="../../config/mccicts-api.js"></script>
+	<script src="../lib/mccicts-api-client.js"></script>
+</head>
+<body>
+	<div class="toolbar inset-shallow">
+		<button type="button" id="refresh-btn">Refresh</button>
+		<button type="button" id="calendar-btn" disabled>Add to Calendar</button>
+		<button type="button" id="register-btn" disabled>Register</button>
+		<span class="spacer"></span>
+		<label><input type="radio" name="view-mode" value="list" checked> List</label>
+		<label><input type="radio" name="view-mode" value="month"> By month</label>
+	</div>
+	<div class="filter-bar inset-shallow">
+		<label>Search <input type="search" id="search-input" placeholder="Title, location, organizer…"></label>
+		<label>Show
+			<select id="filter-select">
+				<option value="upcoming">Upcoming</option>
+				<option value="past">Past</option>
+				<option value="all">All events</option>
+			</select>
+		</label>
+		<label>Category
+			<select id="category-select"><option value="">All</option></select>
+		</label>
+	</div>
+	<div id="status-line" class="inset-shallow">Loading events from MCCICTS…</div>
+	<div class="main-split">
+		<div class="list-pane inset-deep">
+			<div class="pane-title">Schedule</div>
+			<div class="list-scroll" id="list-container"></div>
+		</div>
+		<div class="detail-pane inset-deep">
+			<div class="pane-title">Event details</div>
+			<div class="detail-scroll" id="detail-container">
+				<div class="detail-empty">Select an event to view details.</div>
+			</div>
+		</div>
+	</div>
+	<script src="app.js"></script>
+</body>
+</html>

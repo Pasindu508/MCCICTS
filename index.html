@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MCCICTS — Mayurapada Central College ICT Society</title>
+		<link href="layout.css" rel="stylesheet" type="text/css">
+		<link href="lib/os-gui/layout.css" rel="stylesheet" type="text/css">
+		<link href="lib/os-gui/windows-98.css" rel="stylesheet" type="text/css">
+		<link href="lib/clippy.js/build/clippy.css" rel="stylesheet" type="text/css">
+		<link href="classic.css" rel="stylesheet" type="text/css">
+		<link href="classic-login.css" rel="stylesheet" type="text/css">
+		<link href="classic-cursors.css" rel="stylesheet" type="text/css">
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=LbWArJzeO7">
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=LbWArJzeO7">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=LbWArJzeO7">
+		<link rel="manifest" href="/site.webmanifest?v=LbWArJzeO7">
+		<link rel="mask-icon" href="/safari-pinned-tab.svg?v=LbWArJzeO7" color="#5bbad5">
+		<link rel="shortcut icon" href="/favicon.ico?v=LbWArJzeO7">
+		<meta name="apple-mobile-web-app-title" content="MCCICTS">
+		<meta name="application-name" content="MCCICTS">
+		<meta name="msapplication-TileColor" content="#2b5797">
+		<meta name="theme-color" content="#008080">
+		<meta name="viewport" content="width=device-width, user-scalable=no">
+		<!-- For WayBack Machine, hopefully get it to save these resources -->
+		<link rel="prefetch" href="/filesystem-index.json">
+		<link rel="prefetch" href="/desktop/CREDITS.txt">
+		<link rel="prefetch" href="/programs/notepad/index.html">
+	</head>
+	<body class="login-pending">
+		<div id="login-screen">
+			<div class="login-window">
+				<div class="login-titlebar">
+					<img src="images/icons/my-computer-16x16.png" alt="" width="16" height="16">
+					<span>Welcome to MCCICTS</span>
+				</div>
+				<div class="login-body">
+					<h1>Log On to Windows</h1>
+					<p class="subtitle">Mayurapada Central College ICT Society</p>
+					<div class="login-profiles">
+						<div class="profile-card">
+							<img src="images/icons/my-computer-32x32.png" alt="">
+							<h2>Guest</h2>
+							<p>Full desktop — apps, themes, wallpapers, and file drop. No Admin Console.</p>
+							<button type="button" id="login-guest-btn">Log on as Guest</button>
+						</div>
+						<div class="profile-card">
+							<img src="images/icons/settings-32x32.png" alt="">
+							<h2>Administrator</h2>
+							<p>Full desktop, Paint, Admin Console, and content management.</p>
+							<div class="admin-login">
+								<label for="admin-password">Password</label>
+								<input type="password" id="admin-password" autocomplete="current-password" placeholder="Administrator password">
+								<button type="button" id="login-admin-btn">Log on as Administrator</button>
+							</div>
+						</div>
+					</div>
+					<div id="login-error" hidden></div>
+				</div>
+			</div>
+		</div>
+		<div class="desktop" style="background-image: url(images/wallpapers/mccicts-teal.svg); background-size: cover; background-position: center;"></div>
+		<div class="taskbar" style="z-index: 5000;">
+			<button class="start-button toggle" title="Click here to begin.">
+				<img src="images/start.png"/><b>Start</b>
+			</button>
+			<div class="taskbar-divider"></div>
+			<!-- TODO: pinned apps and resizing handles -->
+			<div class="tasks"></div>
+			<div class="taskbar-divider"></div>
+			<span id="profile-label" class="taskbar-profile" title="Not logged on"></span>
+			<div class="tray inset-shallow">
+				<div class="tray-icons">
+					<img class="tray-icon" src="images/icons/help-16x16.png" title="MCCICTS News" onclick="News()">
+					<img class="tray-icon" src="images/icons/task-scheduler-16x16.png" title="MCCICTS Events" onclick="Events()">
+					<img class="tray-icon" src="images/icons/audio-okay-16x16.png" title="Volume" onclick="showMessageBox({iconID: 'info', message: 'Have a wonderful day!'})">
+				</div>
+				<div class="taskbar-time" ondblclick="showMessageBox({iconID: 'info', message: 'Time to get an old clock!'})"></div>
+			</div>
+		</div>
+		<div class="start-menu outset-deep" hidden style="display: none; z-index: 5001;">
+			<div class="start-menu-titlebar"></div>
+			<div class="start-menu-content">
+				<div class="start-menu-header">
+					<strong class="start-menu-brand">MCCICTS</strong>
+					<span class="start-menu-tagline">Mayurapada Central College ICT Society</span>
+				</div>
+				<div class="start-menu-columns">
+					<div class="start-menu-programs">
+						<p class="start-menu-section-title">Programs</p>
+						<ul class="start-menu-program-list">
+							<li><a href="#" data-program="News"><img src="images/icons/help-16x16.png" width="16" height="16" alt=""> MCCICTS News</a></li>
+							<li><a href="#" data-program="Events"><img src="images/icons/task-scheduler-16x16.png" width="16" height="16" alt=""> MCCICTS Events</a></li>
+							<li><a href="#" data-program="Notepad"><img src="images/icons/notepad-16x16.png" width="16" height="16" alt=""> Notepad</a></li>
+							<li><a href="#" data-program="Paint"><img src="images/icons/paint-16x16.png" width="16" height="16" alt=""> Paint</a></li>
+							<li><a href="#" data-program="Calculator"><img src="images/icons/calculator-16x16.png" width="16" height="16" alt=""> Calculator</a></li>
+							<li><a href="#" data-program="Minesweeper"><img src="images/icons/minesweeper-16x16.png" width="16" height="16" alt=""> Minesweeper</a></li>
+							<li><a href="#" data-program="Solitaire"><img src="images/icons/solitaire-16x16.png" width="16" height="16" alt=""> Solitaire</a></li>
+							<li><a href="#" data-program="SoundRecorder"><img src="images/icons/speaker-16x16.png" width="16" height="16" alt=""> Sound Recorder</a></li>
+							<li><a href="#" data-program="Pinball"><img src="images/icons/pinball-16x16.png" width="16" height="16" alt=""> Pinball</a></li>
+							<li><a href="#" data-program="openWinamp"><img src="images/icons/winamp2-16x16.png" width="16" height="16" alt=""> Winamp</a></li>
+							<li><a href="#" data-program="Explorer"><img src="images/icons/internet-explorer-16x16.png" width="16" height="16" alt=""> Internet Explorer</a></li>
+							<li><a href="#" data-program="Pipes"><img src="images/icons/pipes-16x16.png" width="16" height="16" alt=""> 3D Pipes</a></li>
+							<li><a href="#" data-program="CommandPrompt"><img src="images/icons/msdos-16x16.png" width="16" height="16" alt=""> MS-DOS Prompt</a></li>
+							<li data-admin-only><a href="#" id="start-admin-console" data-program="AdminConsole"><img src="images/icons/settings-16x16.png" width="16" height="16" alt=""> Admin Console</a></li>
+						</ul>
+					</div>
+					<div class="start-menu-links">
+						<p class="start-menu-section-title">MCCICTS</p>
+						<ul>
+							<li><a href="https://mccicts.lk" target="_blank" rel="noopener">MCCICTS Website</a></li>
+							<li><a href="https://mayurapada.lk" target="_blank" rel="noopener">College Website</a></li>
+							<li><a href="#" data-program="show_help" data-help-title="MCCICTS Help">Help Topics</a></li>
+						</ul>
+						<p class="start-menu-section-title">Settings</p>
+						<ul>
+							<li><a href="#" data-action="themes">Themes &amp; Wallpapers</a></li>
+						</ul>
+						<ul class="start-menu-shutdown">
+							<li><a href="#" data-action="logoff">Log Off...</a></li>
+							<li><a href="#" data-action="shutdown">Shut Down...</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="lib/jquery.min.js"></script>
+		<script src="lib/browserfs.js"></script>
+		<script src="lib/clippy.js/build/clippy.js"></script>
+		<script src="lib/konami.js"></script>
+		<script src="lib/os-gui/parse-theme.js"></script>
+		<script src="lib/os-gui/MenuBar.js"></script>
+		<script src="lib/os-gui/$Window.js"></script>
+		<script src="src/msgbox.js"></script>
+		<script>defaultMessageBoxTitle = "Windows";</script>
+		<script src="src/3d-fun.js"></script>
+		<script src="src/helpers.js"></script>
+		<script src="src/filesystem-setup.js"></script>
+		<script src="src/iframe-windows.js"></script>
+		<script src="src/Task.js"></script>
+		<script src="src/$taskbar-time.js"></script>
+		<script src="src/$start-menu.js"></script>
+		<script src="src/FolderView.js"></script>
+		<script src="src/FolderViewItem.js"></script>
+		<script src="src/context-menu.js"></script>
+		<script src="src/folder-view-context-menu.js"></script>
+		<script src="src/two-finger-gestures.js"></script>
+		<script src="src/$desktop.js"></script>
+		<script src="src/window-switcher.js"></script>
+		<script src="src/visualizer-overlay.js"></script>
+		<script src="config/mccicts-api.js"></script>
+		<script src="src/classic-cursors.js"></script>
+		<script src="src/profile.js"></script>
+		<script src="src/programs.js"></script>
+		<script src="src/taskbar-context-menu.js"></script>
+		<script src="src/crt-effect.js"></script>
+
+		<!-- TODO: DRY -->
+		<svg style="position: absolute; pointer-events: none; bottom: 100%;">
+			<defs>
+				<filter id="disabled-inset-filter" x="0" y="0" width="1px" height="1px">
+					<feColorMatrix
+						in="SourceGraphic"
+						type="matrix"
+						values="
+							1 0 0 0 0
+							0 1 0 0 0
+							0 0 1 0 0
+							-1000 -1000 -1000 1 0
+						"
+						result="black-parts-isolated"
+					/>
+					<feFlood result="shadow-color" flood-color="var(--ButtonShadow)"/>
+					<feFlood result="hilight-color" flood-color="var(--ButtonHilight)"/>
+					<feOffset in="black-parts-isolated" dx="1" dy="1" result="offset"/>
+					<feComposite in="hilight-color" in2="offset" operator="in" result="hilight-colored-offset"/>
+					<feComposite in="shadow-color" in2="black-parts-isolated" operator="in" result="shadow-colored"/>
+					<feMerge>
+						<feMergeNode in="hilight-colored-offset"/>
+						<feMergeNode in="shadow-colored"/>
+					</feMerge>
+				</filter>
+			</defs>
+		</svg>
+		<script>
+			// This doesn't seem to be a problem in the Help viewer,
+			// but better safe than sorry.
+			window.addEventListener("resize", ()=> {
+				// work around a browser bug in Chrome where
+				// the SVG filter behaves differently based on the INITIAL zoom level
+				// (if you zoom in, the icons get cut off, if you zoom out, the effect is too thick)
+				document.getElementById("disabled-inset-filter").setAttribute("x", "0");
+			});
+			MCCICTSProfile.init();
+		</script>
+	</body>
+</html>

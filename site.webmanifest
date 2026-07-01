@@ -1,0 +1,23 @@
+{
+	"name": "MCCICTS — Mayurapada Central College ICT Society",
+	"short_name": "MCCICTS",
+	"version": "1.0.0",
+	"description": "ICT Society web desktop — empowering digital creators at Mayurapada Central College",
+	"icons": [
+		{
+			"src": "/android-chrome-192x192.png?v=LbWArJzeO7",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "/android-chrome-256x256.png?v=LbWArJzeO7",
+			"sizes": "256x256",
+			"type": "image/png"
+		}
+	],
+	"lang": "en-US",
+	"start_url": ".",
+	"theme_color": "#008080",
+	"background_color": "#008080",
+	"display": "fullscreen"
+}
