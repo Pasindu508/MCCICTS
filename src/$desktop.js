@@ -44,14 +44,6 @@ function clearDesktopWallpaper(saveToLocalStorage) {
 }
 
 function setDesktopWallpaper(file, repeat, saveToLocalStorage, mode) {
-	if (window.MCCICTSProfile && !MCCICTSProfile.canChangeWallpaper()) {
-		showMessageBox({
-			iconID: "warning",
-			title: "Access Denied",
-			message: "Guests cannot change the desktop wallpaper.\n\nLog on as Administrator to customize the desktop.",
-		});
-		return;
-	}
 	if (!file) {
 		clearDesktopWallpaper(saveToLocalStorage);
 		return;
