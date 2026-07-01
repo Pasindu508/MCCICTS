@@ -1169,14 +1169,11 @@ function openWinamp(file_path) {
 
 			mustHaveMethods(winamp_interface, windowInterfaceMethods);
 
-			let raf_id;
 			let global_pointerdown;
 
 			winamp_task = new Task(winamp_interface);
 			webamp.onClose(function () {
 				winamp_interface.close();
-				cancelAnimationFrame(raf_id);
-				visualizerOverlay.fadeOutAndCleanUp();
 			});
 			webamp.onMinimize(function () {
 				winamp_interface.minimize();
@@ -1195,32 +1192,6 @@ function openWinamp(file_path) {
 					winamp_interface.blur();
 				}
 			});
-
-			const visualizerOverlay = new VisualizerOverlay(
-				$webamp.find(".gen-window canvas")[0],
-				{ mirror: true, stretch: true },
-			);
-
-			// TODO: replace with setInterval
-			// Note: can't access butterchurn canvas image data during a requestAnimationFrame here
-			// because of double buffering
-			const animate = () => {
-				const windowElements = $(".os-window, .window:not(.gen-window)").toArray();
-				windowElements.forEach(windowEl => {
-					if (!windowEl.hasOverlayCanvas) {
-						visualizerOverlay.makeOverlayCanvas(windowEl);
-						windowEl.hasOverlayCanvas = true;
-					}
-				});
-
-				if (webamp.getMediaStatus() === "PLAYING") {
-					visualizerOverlay.fadeIn();
-				} else {
-					visualizerOverlay.fadeOut();
-				}
-				raf_id = requestAnimationFrame(animate);
-			};
-			raf_id = requestAnimationFrame(animate);
 
 			whenLoaded()
 		}, (error) => {

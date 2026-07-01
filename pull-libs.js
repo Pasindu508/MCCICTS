@@ -31,6 +31,20 @@ copy("node_modules/browserfs/dist/browserfs.min.js.map", "lib/");
 copy("node_modules/butterchurn/lib/butterchurn.min.js", "programs/winamp/lib/");
 copy("node_modules/butterchurn-presets/lib/butterchurnPresets.min.js", "programs/winamp/lib/");
 
+const patchButterchurnPreserveBuffer = (filePath) => {
+	let js = readFileSync(filePath, "utf8");
+	const before = js;
+	js = js.replace(
+		/getContext\("webgl2",\{alpha:!1,antialias:!1,depth:!1,stencil:!1,premultipliedAlpha:!1\}/g,
+		'getContext("webgl2",{alpha:!1,antialias:!1,depth:!1,stencil:!1,premultipliedAlpha:!1,preserveDrawingBuffer:!0}'
+	);
+	if (js !== before) {
+		writeFileSync(filePath, js, "utf8");
+		console.log(`Patched preserveDrawingBuffer in ${filePath}`);
+	}
+};
+patchButterchurnPreserveBuffer("programs/winamp/lib/butterchurn.min.js");
+
 const copy_and_monkey_patch_webamp = (file_name) => {
 	const from = `node_modules/webamp/built/${file_name}`;
 	const to = `programs/winamp/lib/${file_name}`;

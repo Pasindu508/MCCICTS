@@ -17,6 +17,7 @@ window.monkey_patch_render = (obj) => obj.render();
 
 class VisualizerOverlay {
 	constructor(visualizerCanvas, renderOptions) {
+		this.renderOptions = renderOptions;
 		this.visualizerCanvas = visualizerCanvas;
 
 		this.wrappyCanvas = document.createElement("canvas");
@@ -26,17 +27,28 @@ class VisualizerOverlay {
 		this.animateFns = [];
 
 		window.monkey_patch_render = (obj) => {
-			// check for Butterchurn's Visualizer class
+			// Butterchurn Milkdrop visualizer (WebGL)
 			if (obj.audio && obj.renderer) {
 				obj.render();
-				this.render(renderOptions);
+				const glCanvas = obj.renderer.gl && obj.renderer.gl.canvas;
+				if (glCanvas) {
+					this.visualizerCanvas = glCanvas;
+				}
+				this.render(this.renderOptions);
 				return;
 			}
 			return obj.render();
 		};
 	}
 
+	setVisualizerCanvas(canvas) {
+		if (canvas) {
+			this.visualizerCanvas = canvas;
+		}
+	}
+
 	makeOverlayCanvas(windowEl) {
+		const mountEl = windowEl.querySelector(".window-content") || windowEl;
 		const canvas = document.createElement("canvas");
 		const ctx = canvas.getContext("2d");
 		canvas.style.position = "absolute";
@@ -44,25 +56,29 @@ class VisualizerOverlay {
 		canvas.style.top = "0";
 		canvas.style.pointerEvents = "none";
 		canvas.style.mixBlendMode = "color-dodge";
-		canvas.style.willChange = "opacity"; // hint fixes flickering in chrome
+		canvas.style.zIndex = "99999";
+		canvas.style.willChange = "opacity";
 		canvas.className = "visualizer-overlay-canvas";
-		windowEl.appendChild(canvas);
+		if (getComputedStyle(mountEl).position === "static") {
+			mountEl.style.position = "relative";
+		}
+		mountEl.appendChild(canvas);
 		this.overlayCanvases.push(canvas);
 		this.animateFns.push(options => {
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			const scale =
-				(windowEl.classList.contains("doubled") ? 2 : 1) *
+				(mountEl.classList.contains("doubled") ? 2 : 1) *
 				(window.devicePixelRatio || 1);
 			if (
-				canvas.width !== windowEl.clientWidth * scale ||
-				canvas.height !== windowEl.clientHeight * scale
+				canvas.width !== mountEl.clientWidth * scale ||
+				canvas.height !== mountEl.clientHeight * scale
 			) {
-				canvas.width = windowEl.clientWidth * scale;
-				canvas.height = windowEl.clientHeight * scale;
+				canvas.width = mountEl.clientWidth * scale;
+				canvas.height = mountEl.clientHeight * scale;
 			}
-			canvas.style.width = windowEl.clientWidth + "px";
-			canvas.style.height = windowEl.clientHeight + "px";
-			const stuff = windowEl.querySelectorAll("*");
+			canvas.style.width = mountEl.clientWidth + "px";
+			canvas.style.height = mountEl.clientHeight + "px";
+			const stuff = mountEl.querySelectorAll("*");
 			Array.from(stuff)
 				.map(el => {
 					const width = el.clientWidth;
@@ -73,7 +89,7 @@ class VisualizerOverlay {
 				.filter(({ area }) => area > 0)
 				.sort((a, b) => b.area - a.area)
 				.forEach(({ element, width, height, area }) => {
-					const { offsetLeft, offsetTop } = getOffset(element, windowEl);
+					const { offsetLeft, offsetTop } = getOffset(element, mountEl);
 					ctx.save();
 					ctx.scale(scale, scale);
 					ctx.translate(offsetLeft, offsetTop);
@@ -105,8 +121,12 @@ class VisualizerOverlay {
 
 	render(options) {
 		const { visualizerCanvas, wrappyCanvas, wrappyCtx, animateFns } = this;
+		if (!visualizerCanvas || !visualizerCanvas.width || !visualizerCanvas.height) {
+			return;
+		}
+		const options_ = options || this.renderOptions;
 		const { width, height } = visualizerCanvas;
-		if (options.mirror) {
+		if (options_.mirror) {
 			const drawImage = () => {
 				wrappyCtx.drawImage(
 					visualizerCanvas,
@@ -119,12 +139,6 @@ class VisualizerOverlay {
 					width,
 					height
 				);
-				// zoom in the source area:
-				// wrappyCtx.drawImage(visualizerCanvas, width/4, height/4, width/2, height/2, 0, 0, width, height);
-				// wrappyCtx.drawImage(visualizerCanvas, width/4, height/4, width/4, height/4, 0, 0, width, height);
-				// for testing:
-				// wrappyCtx.fillStyle = "aqua";
-				// wrappyCtx.fillRect(0, 0, width, height);
 			};
 			wrappyCanvas.width = width * 2;
 			wrappyCanvas.height = height * 2;
@@ -143,7 +157,7 @@ class VisualizerOverlay {
 			wrappyCtx.translate(0, -height);
 			drawImage();
 			wrappyCtx.restore();
-		} else if (options.tile) {
+		} else if (options_.tile) {
 			wrappyCanvas.width = width * 2;
 			wrappyCanvas.height = height * 2;
 			for (let xi = 0; xi < 2; xi++) {
@@ -167,19 +181,25 @@ class VisualizerOverlay {
 			wrappyCtx.drawImage(visualizerCanvas, 0, 0, width, height);
 		}
 
-		animateFns.forEach(fn => fn(options));
+		animateFns.forEach(fn => fn(options_));
 	}
 	cleanUp() {
 		this.overlayCanvases.forEach(canvas => {
 			canvas.remove();
 		});
+		this.overlayCanvases = [];
+		this.animateFns = [];
 		window.monkey_patch_render = (obj) => obj.render();
 	}
 	fadeOutAndCleanUp() {
+		if (!this.overlayCanvases.length) {
+			this.cleanUp();
+			return;
+		}
 		this.fadeOut();
 		this.overlayCanvases[0].addEventListener("transitionend", () => {
 			this.cleanUp();
-		});
+		}, { once: true });
 	}
 	fadeOut() {
 		this.overlayCanvases.forEach(canvas => {
