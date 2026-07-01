@@ -20,7 +20,20 @@ var close_start_menu = function () {
 	$start_button.removeClass("selected");
 	$start_menu.attr("hidden", "hidden");
 	$start_menu.hide();
+	$start_menu.find(".has-submenu.open").removeClass("open");
 };
+
+// Toggle flyout submenus on click/tap (hover is handled in CSS)
+$start_menu.on("click", ".has-submenu > a", function (e) {
+	e.preventDefault();
+	e.stopPropagation();
+	var $li = $(this).parent();
+	var wasOpen = $li.hasClass("open");
+	$start_menu.find(".has-submenu.open").removeClass("open");
+	if (!wasOpen) {
+		$li.addClass("open");
+	}
+});
 var toggle_start_menu = function () {
 	if ($start_menu.is(":hidden")) {
 		open_start_menu();

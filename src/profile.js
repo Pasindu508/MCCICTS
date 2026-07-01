@@ -203,11 +203,12 @@
 			try {
 				const wallpaper_data_url = localStorage.getItem("wallpaper-data-url");
 				const wallpaper_repeat = localStorage.getItem("wallpaper-repeat");
+				const wallpaper_mode = localStorage.getItem("wallpaper-mode");
 				const theme_file_content = localStorage.getItem("desktop-theme");
 				if (wallpaper_data_url) {
 					fetch(wallpaper_data_url).then((r) => r.blob()).then((file) => {
 						if (typeof setDesktopWallpaper === "function") {
-							setDesktopWallpaper(file, wallpaper_repeat, false);
+							setDesktopWallpaper(file, wallpaper_repeat, false, wallpaper_mode);
 						}
 					});
 				}

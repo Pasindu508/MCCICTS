@@ -598,6 +598,232 @@ function AdminConsole() {
 	return new Task($win);
 }
 
+// The wallpapers available in the Display Properties → Background tab.
+// Paths are URL-encoded because some filenames contain spaces.
+var WALLPAPER_CATALOG = [
+	{ name: "(None)", src: null, defaultMode: "center" },
+	{ name: "MCCICTS Logo", src: "images/wallpapers/wallpaper%20with%20logo.png", defaultMode: "stretch" },
+	{ name: "Teal", src: "images/wallpapers/Windows%20Default%20I.png", defaultMode: "stretch" },
+	{ name: "MCCICTS Teal", src: "images/wallpapers/mccicts-teal.svg", defaultMode: "stretch" },
+];
+
+// Color schemes for the Display Properties → Appearance tab.
+var SCHEME_CATALOG = [
+	{ name: "MCCICTS Teal", path: "/desktop/Themes/MCCICTS/MCCICTS Teal.theme" },
+	{ name: "MCCICTS Navy", path: "/desktop/Themes/MCCICTS/MCCICTS Navy.theme" },
+];
+
+function DisplayProperties(initialTab) {
+	// Focus an existing Display Properties window instead of opening a duplicate.
+	if (DisplayProperties._$win && DisplayProperties._$win.element && document.body.contains(DisplayProperties._$win.element)) {
+		DisplayProperties._$win.focus();
+		return DisplayProperties._$win.task || null;
+	}
+
+	var $win = new $Window({
+		title: "Display Properties",
+		icons: iconsAtTwoSizes("settings"),
+		resizable: false,
+		maximizeButton: false,
+		minimizeButton: false,
+		innerWidth: 400,
+		innerHeight: 430,
+	});
+	DisplayProperties._$win = $win;
+
+	var savedMode = "center";
+	var savedName = "";
+	try {
+		savedMode = localStorage.getItem("wallpaper-mode") || "center";
+		savedName = localStorage.getItem("wallpaper-name") || "";
+	} catch (e) { /* no local storage */ }
+
+	var html =
+		'<div class="display-properties">' +
+		'<div class="dp-tabs" role="tablist">' +
+		'<button type="button" class="dp-tab selected" data-tab="background">Background</button>' +
+		'<button type="button" class="dp-tab" data-tab="screensaver">Screen Saver</button>' +
+		'<button type="button" class="dp-tab" data-tab="appearance">Appearance</button>' +
+		'<button type="button" class="dp-tab" data-tab="settings">Settings</button>' +
+		'</div>' +
+		'<div class="dp-page-frame">' +
+		// Background page
+		'<div class="dp-page" data-tab="background">' +
+		'<div class="dp-monitor"><div class="dp-monitor-screen"><div class="dp-screen"></div></div><div class="dp-monitor-stand"></div></div>' +
+		'<div class="dp-label">Wallpaper</div>' +
+		'<div class="dp-listbox dp-wallpaper-list" tabindex="0"></div>' +
+		'<div class="dp-row">' +
+		'<span class="dp-display-label">Display:</span>' +
+		'<select class="dp-display-mode">' +
+		'<option value="center">Center</option>' +
+		'<option value="tile">Tile</option>' +
+		'<option value="stretch">Stretch</option>' +
+		'</select>' +
+		'</div>' +
+		'</div>' +
+		// Appearance page
+		'<div class="dp-page" data-tab="appearance" hidden>' +
+		'<div class="dp-monitor"><div class="dp-monitor-screen"><div class="dp-appearance-preview">' +
+		'<div class="dp-prev-title">Inactive Window</div>' +
+		'<div class="dp-prev-title active">Active Window</div>' +
+		'<div class="dp-prev-body">Window Text</div>' +
+		'</div></div><div class="dp-monitor-stand"></div></div>' +
+		'<div class="dp-label">Scheme</div>' +
+		'<div class="dp-listbox dp-scheme-list" tabindex="0"></div>' +
+		'</div>' +
+		// Screen Saver page
+		'<div class="dp-page" data-tab="screensaver" hidden>' +
+		'<div class="dp-monitor"><div class="dp-monitor-screen"><div class="dp-screen dp-blank"></div></div><div class="dp-monitor-stand"></div></div>' +
+		'<p class="dp-placeholder">No screen saver is configured.<br>Screen savers are not available in this environment.</p>' +
+		'</div>' +
+		// Settings page
+		'<div class="dp-page" data-tab="settings" hidden>' +
+		'<div class="dp-monitor"><div class="dp-monitor-screen"><div class="dp-screen dp-settings-screen"></div></div><div class="dp-monitor-stand"></div></div>' +
+		'<p class="dp-placeholder">Colors: True Color (32 bit)<br>Screen area: your browser window<br><br>Display settings cannot be changed here.</p>' +
+		'</div>' +
+		'</div>' +
+		'</div>';
+
+	var $body = $(html).appendTo($win.$content);
+
+	var $screen = $body.find(".dp-page[data-tab='background'] .dp-screen");
+	var $modeSelect = $body.find(".dp-display-mode");
+	var $wallList = $body.find(".dp-wallpaper-list");
+	var $schemeList = $body.find(".dp-scheme-list");
+
+	// Pending selections (null = not changed by the user this session).
+	var chosenWallpaperIndex = null;
+	var chosenSchemeIndex = null;
+
+	function previewWallpaper(item, mode) {
+		if (!item || !item.src) {
+			$screen.css({ backgroundImage: "none" });
+			return;
+		}
+		var css = { backgroundImage: "url('" + item.src + "')", backgroundPosition: "center" };
+		if (mode === "tile") {
+			css.backgroundRepeat = "repeat";
+			css.backgroundSize = "40%";
+		} else if (mode === "stretch") {
+			css.backgroundRepeat = "no-repeat";
+			css.backgroundSize = "100% 100%";
+		} else {
+			css.backgroundRepeat = "no-repeat";
+			css.backgroundSize = "contain";
+		}
+		$screen.css(css);
+	}
+
+	// Build the wallpaper list.
+	WALLPAPER_CATALOG.forEach(function (item, index) {
+		var $item = $("<div class='dp-list-item'></div>").text(item.name).attr("data-index", index);
+		$item.on("click", function () {
+			$wallList.find(".dp-list-item").removeClass("selected");
+			$item.addClass("selected");
+			chosenWallpaperIndex = index;
+			$modeSelect.val(item.defaultMode);
+			previewWallpaper(item, item.defaultMode);
+		});
+		$wallList.append($item);
+	});
+
+	// Build the scheme list.
+	SCHEME_CATALOG.forEach(function (scheme, index) {
+		var $item = $("<div class='dp-list-item'></div>").text(scheme.name).attr("data-index", index);
+		$item.on("click", function () {
+			$schemeList.find(".dp-list-item").removeClass("selected");
+			$item.addClass("selected");
+			chosenSchemeIndex = index;
+		});
+		$schemeList.append($item);
+	});
+
+	$modeSelect.on("change", function () {
+		var idx = chosenWallpaperIndex != null ? chosenWallpaperIndex : 0;
+		previewWallpaper(WALLPAPER_CATALOG[idx], $modeSelect.val());
+	});
+
+	// Preselect based on saved settings.
+	$modeSelect.val(["center", "tile", "stretch"].indexOf(savedMode) >= 0 ? savedMode : "center");
+	var savedIndex = WALLPAPER_CATALOG.findIndex(function (w) { return w.name === savedName; });
+	if (savedIndex >= 0) {
+		$wallList.find(".dp-list-item[data-index='" + savedIndex + "']").addClass("selected");
+		previewWallpaper(WALLPAPER_CATALOG[savedIndex], $modeSelect.val());
+	} else {
+		$wallList.find(".dp-list-item[data-index='0']").addClass("selected");
+	}
+
+	// Tab switching.
+	$body.find(".dp-tab").on("click", function () {
+		var tab = $(this).data("tab");
+		$body.find(".dp-tab").removeClass("selected");
+		$(this).addClass("selected");
+		$body.find(".dp-page").each(function () {
+			this.hidden = $(this).data("tab") !== tab;
+		});
+	});
+	if (initialTab) {
+		$body.find(".dp-tab[data-tab='" + initialTab + "']").trigger("click");
+	}
+
+	function applyChanges() {
+		var didSomething = false;
+		if (chosenWallpaperIndex != null) {
+			var item = WALLPAPER_CATALOG[chosenWallpaperIndex];
+			var mode = $modeSelect.val();
+			if (!item.src) {
+				clearDesktopWallpaper(true);
+				try { localStorage.setItem("wallpaper-name", "(None)"); } catch (e) {}
+			} else {
+				fetch(item.src)
+					.then(function (r) { return r.blob(); })
+					.then(function (blob) {
+						setDesktopWallpaper(blob, mode === "tile" ? "repeat" : "no-repeat", true, mode);
+						try { localStorage.setItem("wallpaper-name", item.name); } catch (e) {}
+					})
+					.catch(function (err) {
+						showMessageBox({ iconID: "error", title: "Display Properties", message: "Could not load the wallpaper:\n\n" + err });
+					});
+			}
+			didSomething = true;
+		}
+		if (chosenSchemeIndex != null && typeof openThemeFile === "function") {
+			openThemeFile(SCHEME_CATALOG[chosenSchemeIndex].path);
+			didSomething = true;
+		}
+		return didSomething;
+	}
+
+	var $ok = $win.$Button("OK", function () {
+		applyChanges();
+		$win.close();
+	});
+	var $cancel = $win.$Button("Cancel", function () {
+		$win.close();
+	});
+	var $apply = $win.$Button("Apply", function () {
+		applyChanges();
+	});
+	$([$ok[0], $cancel[0], $apply[0]]).css({ minWidth: 75, height: 23 });
+	var $buttonRow = $("<div class='dp-buttons'></div>").append($ok, $cancel, $apply);
+	$win.$content.append($buttonRow);
+
+	$ok.addClass("default").focus();
+
+	$win.on("closed", function () {
+		if (DisplayProperties._$win === $win) {
+			DisplayProperties._$win = null;
+		}
+	});
+
+	$win.center();
+
+	var task = new Task($win);
+	$win.task = task;
+	return task;
+}
+window.DisplayProperties = DisplayProperties;
+
 function Pinball() {
 	var $win = make_iframe_window({
 		src: "programs/pinball/space-cadet.html",
@@ -1437,6 +1663,21 @@ folder_view.arrange_icons();
 			fn();
 			close_start_menu();
 		}
+	});
+
+	$(".start-menu [data-open]").on("click", function (e) {
+		e.preventDefault();
+		const path = $(this).attr("data-open");
+		if (path) {
+			systemExecuteFile(path);
+			close_start_menu();
+		}
+	});
+
+	$(".start-menu [data-action='display']").on("click", function (e) {
+		e.preventDefault();
+		close_start_menu();
+		DisplayProperties();
 	});
 
 	$(".start-menu [data-action='themes']").on("click", function (e) {

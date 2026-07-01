@@ -10,7 +10,40 @@ var folder_view = new FolderView(desktop_folder_path, {
 });
 $(folder_view.element).appendTo($desktop);
 
-function setDesktopWallpaper(file, repeat, saveToLocalStorage) {
+// Map a Windows-style display mode to the CSS needed to render it.
+function wallpaperModeToCss(mode, repeat) {
+	// Backwards compatible: if no mode given, infer from the repeat argument.
+	if (!mode) {
+		mode = (repeat === "repeat") ? "tile" : "center";
+	}
+	switch (mode) {
+		case "tile":
+			return { backgroundRepeat: "repeat", backgroundPosition: "top left", backgroundSize: "auto" };
+		case "stretch":
+			return { backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundSize: "100% 100%" };
+		case "center":
+		default:
+			return { backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundSize: "auto" };
+	}
+}
+
+function clearDesktopWallpaper(saveToLocalStorage) {
+	$desktop.css({
+		backgroundImage: "none",
+		backgroundRepeat: "no-repeat",
+		backgroundPosition: "center",
+		backgroundSize: "auto",
+	});
+	if (saveToLocalStorage) {
+		try {
+			localStorage.removeItem("wallpaper-data-url");
+			localStorage.removeItem("wallpaper-repeat");
+			localStorage.removeItem("wallpaper-mode");
+		} catch (error) { /* no local storage */ }
+	}
+}
+
+function setDesktopWallpaper(file, repeat, saveToLocalStorage, mode) {
 	if (window.MCCICTSProfile && !MCCICTSProfile.canChangeWallpaper()) {
 		showMessageBox({
 			iconID: "warning",
@@ -19,19 +52,23 @@ function setDesktopWallpaper(file, repeat, saveToLocalStorage) {
 		});
 		return;
 	}
+	if (!file) {
+		clearDesktopWallpaper(saveToLocalStorage);
+		return;
+	}
+	const resolved_mode = mode || ((repeat === "repeat") ? "tile" : "center");
 	const blob_url = URL.createObjectURL(file);
-	$desktop.css({
-		backgroundImage: `url(${blob_url})`,
-		backgroundRepeat: repeat,
-		backgroundPosition: "center",
-		backgroundSize: "auto",
-	});
+	$desktop.css(Object.assign(
+		{ backgroundImage: `url(${blob_url})` },
+		wallpaperModeToCss(resolved_mode, repeat)
+	));
 	if (saveToLocalStorage) {
 		var fr = new FileReader();
 		window.fr = fr;
 		fr.onload = () => {
 			localStorage.setItem("wallpaper-data-url", fr.result);
-			localStorage.setItem("wallpaper-repeat", repeat);
+			localStorage.setItem("wallpaper-repeat", resolved_mode === "tile" ? "repeat" : "no-repeat");
+			localStorage.setItem("wallpaper-mode", resolved_mode);
 		};
 		fr.onerror = () => {
 			console.error("Error reading file (for setting wallpaper)", file);
@@ -42,11 +79,12 @@ function setDesktopWallpaper(file, repeat, saveToLocalStorage) {
 try {
 	var wallpaper_data_url = localStorage.getItem("wallpaper-data-url");
 	var wallpaper_repeat = localStorage.getItem("wallpaper-repeat");
+	var wallpaper_mode = localStorage.getItem("wallpaper-mode");
 	var theme_file_content = localStorage.getItem("desktop-theme");
 	// Wallpaper and theme from localStorage are applied after login (see profile.js).
 	if (wallpaper_data_url) {
 		fetch(wallpaper_data_url).then(r => r.blob()).then(file => {
-			setDesktopWallpaper(file, wallpaper_repeat, false);
+			setDesktopWallpaper(file, wallpaper_repeat, false, wallpaper_mode);
 		});
 	}
 	if (theme_file_content) {

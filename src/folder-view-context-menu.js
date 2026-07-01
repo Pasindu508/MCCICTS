@@ -44,11 +44,15 @@
 	}
 
 	function showDesktopProperties() {
+		if (typeof DisplayProperties === "function") {
+			DisplayProperties();
+			return;
+		}
 		const role = window.MCCICTSProfile?.getDisplayName?.() || "Guest";
 		showMessageBox({
 			iconID: "info",
 			title: "Display Properties",
-			message: `MCCICTS Desktop\n\nLogged on as: ${role}\n\nUse the Start menu → Themes & Wallpapers to change the desktop appearance.`,
+			message: `MCCICTS Desktop\n\nLogged on as: ${role}\n\nUse the Start menu → Display Properties to change the desktop appearance.`,
 		});
 	}
 
