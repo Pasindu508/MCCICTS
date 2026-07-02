@@ -20,7 +20,6 @@
 		-webkit-touch-callout: none;
 	}
 
-	html.touch-screen .window-titlebar button,
 	html.touch-screen .taskbar button,
 	html.touch-screen .start-button,
 	html.touch-screen .desktop-icon,
@@ -30,12 +29,113 @@
 		touch-action: manipulation;
 	}
 
-	html.touch-screen .window-titlebar button {
-		min-width: 22px;
+	html.touch-screen .taskbar .task {
 		min-height: 22px;
 	}
 
-	html.touch-screen .taskbar .task {
-		min-height: 22px;
+	/* Win98 titlebar buttons — original size; sprite via background-image (mask breaks on touch/CRT). */
+	html.touch-screen .os-window .window-titlebar {
+		height: 18px;
+		min-height: 18px;
+		box-sizing: border-box;
+	}
+
+	html.touch-screen .os-window.tool-window .window-titlebar {
+		height: 15px;
+		min-height: 15px;
+	}
+
+	html.touch-screen .os-window .window-title-area {
+		height: 16px;
+	}
+
+	html.touch-screen .os-window.tool-window .window-title-area {
+		height: 14px;
+	}
+
+	html.touch-screen .os-window .window-button {
+		display: block;
+		width: 16px;
+		height: 14px;
+		min-width: 16px;
+		min-height: 14px;
+		max-width: 16px;
+		max-height: 14px;
+		margin: 2px 0;
+		padding: 0;
+		flex: 0 0 auto;
+		box-sizing: border-box;
+		touch-action: manipulation;
+		font-size: 0;
+		line-height: 0;
+		color: transparent;
+	}
+
+	html.touch-screen .os-window .window-close-button {
+		margin-left: 2px;
+		margin-right: 2px;
+	}
+
+	html.touch-screen .os-window.tool-window .window-close-button {
+		width: 11px;
+		height: 11px;
+		min-width: 11px;
+		min-height: 11px;
+		max-width: 11px;
+		max-height: 11px;
+	}
+
+	html.touch-screen .os-window .window-button .window-button-icon {
+		display: block;
+		width: 12px;
+		height: 10px;
+		background-image: url("/images/titlebar-buttons.png");
+		background-repeat: no-repeat;
+		background-size: 60px 10px;
+		image-rendering: pixelated;
+		-webkit-mask-image: none !important;
+		mask-image: none !important;
+		position: relative;
+		top: 0;
+		left: 0;
+		pointer-events: none;
+	}
+
+	html.touch-screen .os-window .window-button .window-button-icon::before,
+	html.touch-screen .os-window .window-button .window-button-icon::after {
+		content: none !important;
+		display: none !important;
+	}
+
+	html.touch-screen .os-window .window-action-minimize .window-button-icon {
+		background-position: 0 0;
+	}
+
+	html.touch-screen .os-window .window-action-maximize .window-button-icon {
+		background-position: -14px 0;
+	}
+
+	html.touch-screen .os-window .window-action-restore .window-button-icon {
+		background-position: -27px 0;
+	}
+
+	html.touch-screen .os-window .window-action-close .window-button-icon {
+		background-position: -40px 0;
+	}
+
+	html.touch-screen .os-window.tool-window .window-close-button .window-button-icon {
+		width: 7px;
+		height: 7px;
+		background-size: 42px 7px;
+		background-position: -28px 0;
+	}
+	html.touch-screen .os-window .window-button:enabled:hover:active .window-button-icon,
+	html.touch-screen .os-window .window-button.pressing .window-button-icon {
+		top: 1px;
+		left: 1px;
+	}
+
+	html.touch-screen .os-window .window-button:disabled .window-button-icon {
+		opacity: 0.45;
 	}
 }
