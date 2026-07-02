@@ -1,0 +1,41 @@
+/**
+ * Touch-first presentation for phones and tablets (no mouse cursor).
+ * Scoped to coarse pointers on viewports up to 1024px wide.
+ */
+@media (hover: none) and (pointer: coarse) and (max-width: 1024px) {
+	html.touch-screen,
+	html.touch-screen body,
+	html.touch-screen body *:not(iframe) {
+		cursor: none !important;
+	}
+
+	html.touch-screen #crt-cursor,
+	html.touch-screen body.crt-effect-on.crt-cursor-active #crt-cursor {
+		display: none !important;
+		visibility: hidden !important;
+	}
+
+	html.touch-screen {
+		-webkit-tap-highlight-color: transparent;
+		-webkit-touch-callout: none;
+	}
+
+	html.touch-screen .window-titlebar button,
+	html.touch-screen .taskbar button,
+	html.touch-screen .start-button,
+	html.touch-screen .desktop-icon,
+	html.touch-screen .start-menu a,
+	html.touch-screen .menu-button,
+	html.touch-screen .menu-item {
+		touch-action: manipulation;
+	}
+
+	html.touch-screen .window-titlebar button {
+		min-width: 22px;
+		min-height: 22px;
+	}
+
+	html.touch-screen .taskbar .task {
+		min-height: 22px;
+	}
+}

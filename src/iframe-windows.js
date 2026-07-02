@@ -123,6 +123,9 @@ function enhance_iframe(iframe) {
 		if (typeof applyClassicCursors === "function") {
 			applyClassicCursors(iframe.contentDocument);
 		}
+		if (typeof installTouchScreen === "function") {
+			installTouchScreen(iframe.contentDocument);
+		}
 		if (typeof installTwoFingerGestures === "function") {
 			installTwoFingerGestures(iframe.contentDocument);
 		}

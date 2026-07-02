@@ -527,6 +527,10 @@
 
 	function renderCursor() {
 		cursorRafPending = false;
+		if (document.documentElement.classList.contains("touch-screen")) {
+			hideCursor();
+			return;
+		}
 		const el = document.getElementById(CURSOR_ID);
 		if (!el) return;
 		measureCursorInset();
@@ -540,6 +544,9 @@
 	}
 
 	function onPointerMove(e) {
+		if (document.documentElement.classList.contains("touch-screen")) {
+			return;
+		}
 		pointerX = e.clientX;
 		pointerY = e.clientY;
 		if (isEnabled() && curvatureOn) {

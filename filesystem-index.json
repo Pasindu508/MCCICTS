@@ -4682,6 +4682,7 @@
     "profile.js": null,
     "programs.js": null,
     "taskbar-context-menu.js": null,
+    "touch-screen.js": null,
     "two-finger-gestures.js": null,
     "visualizer-overlay.js": null,
     "window-switcher.js": null
@@ -4693,6 +4694,7 @@
     "paint.spec.ts": null,
     "screensavers.spec.ts": null
   },
+  "touch-screen.css": null,
   "uploads": {
     "events": {},
     "news": {

@@ -11,6 +11,13 @@
 
 	function applyClassicCursors(doc) {
 		if (!doc?.head) return;
+		if (typeof global.isTouchScreenMode === "function" && global.isTouchScreenMode()) {
+			if (typeof global.applyTouchScreenStyles === "function") {
+				global.applyTouchScreenStyles(doc);
+			}
+			scanForIframes(doc);
+			return;
+		}
 		if (doc.getElementById(STYLESHEET_ID)) return;
 		const link = doc.createElement("link");
 		link.id = STYLESHEET_ID;
