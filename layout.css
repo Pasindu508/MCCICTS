@@ -604,3 +604,21 @@ html, body {
 	gap: 6px;
 	padding: 10px 10px 8px;
 }
+
+/* Mobile only: keep windows inside the viewport (desktop unchanged at ≥768px) */
+@media (max-width: 767px) {
+	html,
+	body {
+		overflow-x: hidden;
+		max-width: 100%;
+	}
+
+	.os-window:not(.maximized) {
+		max-width: calc(100vw - 8px) !important;
+		box-sizing: border-box;
+	}
+
+	body.crt-effect-on .os-window:not(.maximized) {
+		max-width: calc(100% - 8px) !important;
+	}
+}
